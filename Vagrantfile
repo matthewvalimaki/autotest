@@ -22,7 +22,7 @@ Vagrant.configure(2) do |config|
 
 	# update system
 	sudo apt-get dist-upgrade -y
-	sudo apt-get install -y php5-cli php5-curl xvfb nodejs openjdk-8-jre-headless
+	sudo apt-get install -y php5-cli php5-curl xvfb nodejs openjdk-8-jre-headless libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
 	sudo apt-get autoremove -y
 	
 	# Android SDK
@@ -39,6 +39,7 @@ Vagrant.configure(2) do |config|
     export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
 	# create headless emulator
 	android create avd --force -n appium -t "Google Inc.:Google APIs:23" --abi "google_apis/armeabi-v7a"
+	echo "run: emulator -avd appium -no-skin -no-audio -no-window"
 	
 	sudo npm install -g appium
 	
