@@ -22,7 +22,7 @@ Vagrant.configure(2) do |config|
 
 	# update system
 	sudo apt-get dist-upgrade -y
-	sudo apt-get install -y php5-cli php5-curl xvfb nodejs openjdk-8-jre-headless libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
+	sudo apt-get install -y php5-cli php5-curl firefox xvfb nodejs openjdk-8-jre-headless libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
 	sudo apt-get autoremove -y
 	
 	# Android SDK
@@ -32,14 +32,14 @@ Vagrant.configure(2) do |config|
 	sudo chown -R vagrant:vagrant android-sdk-linux/
 	# update 
 	# get platform-tools
-	( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | android-sdk-linux/tools/android update sdk --no-ui -s --filter 2,24,36
+	( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | sudo android-sdk-linux/tools/android update sdk --no-ui -s --filter platform-tool,3,23,35
     export PATH="$HOME/android-sdk-linux/tools:$PATH"
     export PATH="$HOME/android-sdk-linux/platform-tools:$PATH"
     export ANDROID_HOME="$HOME/android-sdk-linux"
-    export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+    export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 	# create headless emulator
 	android create avd --force -n appium -t "Google Inc.:Google APIs:23" --abi "google_apis/armeabi-v7a"
-	echo "run: emulator -avd appium -no-skin -no-audio -no-window"
+	# to run: emulator -avd appium -no-skin -no-audio -no-window
 	
 	sudo npm install -g appium
 	
@@ -47,8 +47,15 @@ Vagrant.configure(2) do |config|
     curl -sS https://getcomposer.org/installer | php
     sudo mv composer.phar /usr/bin/composer
 	
-    # Download Selenium server
-    echo "Download Selenium server"
-    wget --quiet http://goo.gl/yLJLZg -O selenium-server-standalone.jar
+    # Selenium
+	mkdir -p /usr/lib/selenium
+	mkdir -p /var/log/selenium
+	chmod a+w /var/log/selenium
+    wget --quiet http://goo.gl/yLJLZg -O /usr/lib/selenium/selenium-server-standalone.jar
+	cp /vagrant/selenium-init.sh /etc/init.d/selenium-init
+	chmod 755 /etc/init.d/selenium
+	update-rc.d selenium defaults
+	service selenium start
+	
   SHELL
 end
